@@ -63,9 +63,11 @@ public function update(Request $request, $id)
     ]);
 
     if ($request->hasFile('foto_profil')) {
-        if ($mhs->Foto_Profil) {
+        // Hapus foto lama jika ada
+        if ($mhs->Foto_Profil && Storage::disk('public')->exists($mhs->Foto_Profil)) {
             Storage::disk('public')->delete($mhs->Foto_Profil);
         }
+        // Simpan foto baru
         $validated['Foto_Profil'] = $request->file('foto_profil')->store('foto_profil', 'public');
     }
 
@@ -74,14 +76,18 @@ public function update(Request $request, $id)
     // Ubah path ke URL penuh jika perlu ditampilkan
     $mhs->Foto_Profil = $mhs->Foto_Profil ? asset('storage/' . $mhs->Foto_Profil) : null;
 
-    return response()->json($mhs);
+    return response()->json([
+        'message' => 'Data berhasil diupdate',
+        'data' => $mhs,
+    ]);
 }
 
 
     public function destroy($id)
     {
         $mhs = Mahasiswa::where('Nim', $id)->firstOrFail();
-        if ($mhs->Foto_Profil) {
+
+        if ($mhs->Foto_Profil && Storage::disk('public')->exists($mhs->Foto_Profil)) {
             Storage::disk('public')->delete($mhs->Foto_Profil);
         }
         $mhs->delete();

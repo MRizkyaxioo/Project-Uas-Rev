@@ -7,6 +7,19 @@
 </head>
 <body class="container mt-4">
     <h2 class="text-center">DATA MAHASISWA</h2>
+
+    <form id="todo-form" action="/mahasiswa" method="get">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" name="search" value="{{ request
+                                ('search') }}"
+                                    placeholder="Masukkan Nama">
+                                <button class="btn btn-secondary" type="submit">
+                                    Cari
+                                </button>
+                            </div>
+    </form>
+
+
     <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#tambahModal">TAMBAH</button>
 
     @foreach($mahasiswa as $m)
@@ -86,6 +99,15 @@
             </div>
         </div>
     @endforeach
+    <p class="text-center text-muted">
+    Menampilkan {{ $mahasiswa->firstItem() }}–{{ $mahasiswa->lastItem() }} dari {{ $mahasiswa->total() }} mahasiswa
+    </p>
+
+    <!-- Navigasi pagination -->
+    <div class="d-flex justify-content-center mt-3">
+        {{ $mahasiswa->links() }}
+    </div>
+
 
     <!-- Modal Tambah -->
     <div class="modal fade" id="tambahModal" tabindex="-1">
