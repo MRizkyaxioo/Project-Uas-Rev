@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class MahasiswaController extends Controller
 {
      public function index() {
-        $max_data = 5;
+        $max_data = 6;
 
         if(request('search')) {
             $data = Mahasiswa::where('Nama_Lengkap','like','%'.request('search').'%')->paginate($max_data)
@@ -72,5 +72,10 @@ class MahasiswaController extends Controller
     {
         $data = Mahasiswa::where('Nim', $nim)->firstOrFail();
         return view('mahasiswa.detail', compact('data'));
+    }
+
+    public function dashboard()
+    {
+        return view('dashboard.index');
     }
 }

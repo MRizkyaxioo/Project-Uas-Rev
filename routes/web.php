@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/mahasiswa', [MahasiswaController::class, 'index']);
+Route::get('/', [MahasiswaController::class, 'index']);
+Route::get('/dashboard', [MahasiswaController::class, 'dashboard']);
 Route::post('/mahasiswa/store', [MahasiswaController::class, 'store']);
 Route::post('/mahasiswa/update/{nim}', [MahasiswaController::class, 'update']);
 Route::delete('/mahasiswa/delete/{nim}', [MahasiswaController::class, 'destroy']);
