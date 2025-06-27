@@ -23,6 +23,20 @@ class MahasiswaController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+        'Nim'          => 'required|string|max:20',
+        'Nama_Lengkap' => 'required|string|max:100',
+        'Email'        => 'required|email|max:30',
+    ], [
+        'Nim.required'          => 'NIM wajib diisi.',
+        'Nim.max'               => 'NIM tidak boleh lebih dari 20 karakter.',
+        'Nama_Lengkap.required' => 'Nama lengkap wajib diisi.',
+        'Nama_Lengkap.max'      => 'Nama lengkap tidak boleh lebih dari 100 huruf.',
+        'Email.required'        => 'Email wajib diisi.',
+        'Email.email'           => 'Format email tidak valid (harus mengandung "@").',
+        'Email.max'             => 'Email tidak boleh lebih dari 30 karakter.',
+    ]);
+
         $data = $request->all();
 
     if ($request->hasFile('foto_profil')) {
@@ -36,6 +50,17 @@ class MahasiswaController extends Controller
 
     public function update(Request $request, $nim)
     {
+        $request->validate([
+        'Nama_Lengkap' => 'required|string|max:100',
+        'Email'        => 'required|email|max:30',
+    ], [
+        'Nama_Lengkap.required' => 'Nama lengkap wajib diisi.',
+        'Nama_Lengkap.max'      => 'Nama lengkap tidak boleh lebih dari 100 huruf.',
+        'Email.required'        => 'Email wajib diisi.',
+        'Email.email'           => 'Format email tidak valid (harus mengandung "@").',
+        'Email.max'             => 'Email tidak boleh lebih dari 30 karakter.',
+    ]);
+
         $data = $request->except('_token');
         $mahasiswa = Mahasiswa::where('Nim', $nim)->first();
 
@@ -78,4 +103,5 @@ class MahasiswaController extends Controller
     {
         return view('dashboard.index');
     }
+
 }

@@ -19,8 +19,27 @@
 
     <h2 class="text-center mb-4">DATA MAHASISWA</h2>
 
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+
+    <script>
+        // Buka modal tambah otomatis jika ada error saat tambah
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalTambah = new bootstrap.Modal(document.getElementById('tambahModal'));
+            modalTambah.show();
+        });
+    </script>
+@endif
+
+
     <!-- Form Pencarian -->
-    <form id="todo-form" action="/" method="get">
+    <form id="todo-form" action="/mahasiswa" method="get">
         <div class="input-group mb-4">
             <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Masukkan Nama">
             <button class="btn btn-secondary" type="submit">Cari</button>
@@ -40,7 +59,6 @@
         <div class="col">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex align-items-center">
-                    <!-- Foto Profil -->
                     <div class="me-3">
                         @if($m->Foto_Profil)
                             <img src="{{ asset('storage/' . $m->Foto_Profil) }}" alt="Foto" width="70" height="70" class="rounded-circle shadow-sm object-fit-cover">
@@ -50,8 +68,6 @@
                             </div>
                         @endif
                     </div>
-
-                    <!-- Info Mahasiswa -->
                     <div class="flex-grow-1">
                         <h5 class="mb-1">{{ $m->Nama_Lengkap }}</h5>
                         <p class="text-muted mb-2">NIM: {{ $m->Nim }}</p>
@@ -81,7 +97,6 @@
                     <div class="modal-body">
                         <input class="form-control mb-2" name="Nama_Lengkap" value="{{ $m->Nama_Lengkap }}">
                         <input class="form-control mb-2" name="Tanggal_Lahir" type="date" value="{{ $m->Tanggal_Lahir }}">
-                        <!-- Pilihan Select (isi sesuai data sebenarnya) -->
                         <select class="form-control mb-2" name="Id_Jk">
                             <option value="">-- Jenis Kelamin --</option>
                         </select>
@@ -100,8 +115,8 @@
                         <select class="form-control mb-2" name="Id_Kelurahan">
                             <option value="">-- Kelurahan --</option>
                         </select>
-                        <textarea class="form-control mb-2" name="Alamat" placeholder="Alamat">{{ $m->Alamat }}</textarea>
-                        <input class="form-control mb-2" name="Email" placeholder="Email" value="{{ $m->Email }}">
+                        <textarea class="form-control mb-2" name="Alamat">{{ $m->Alamat }}</textarea>
+                        <input class="form-control mb-2" name="Email" value="{{ $m->Email }}">
                         <input class="form-control" name="foto_profil" type="file">
                         @if ($m->Foto_Profil)
                             <div class="mt-2">
@@ -111,7 +126,7 @@
                         @endif
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
@@ -137,7 +152,6 @@
                     <input class="form-control mb-2" name="Nim" placeholder="NIM">
                     <input class="form-control mb-2" name="Nama_Lengkap" placeholder="Nama Lengkap">
                     <input class="form-control mb-2" name="Tanggal_Lahir" type="date">
-                    <!-- Pilihan Select -->
                     <select class="form-control mb-2" name="Id_Jk">
                         <option value="">-- Jenis Kelamin --</option>
                     </select>
@@ -161,7 +175,7 @@
                     <input class="form-control mb-2" name="foto_profil" type="file">
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Tambah</button>
                 </div>
             </form>
@@ -171,29 +185,50 @@
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const deleteForms = document.querySelectorAll('.form-delete');
-            deleteForms.forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus?',
-                        text: "Data tidak bisa dikembalikan setelah dihapus!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteForms = document.querySelectorAll('.form-delete');
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data tidak bisa dikembalikan setelah dihapus!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
                 });
             });
         });
-    </script>
+
+        // Reset hanya input dan textarea, BUKAN select
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('hidden.bs.modal', function () {
+                const form = modal.querySelector('form');
+                if (form) {
+                    // Reset input (kecuali file)
+                    form.querySelectorAll("input").forEach(el => {
+                        if (el.type !== "file") el.value = el.defaultValue;
+                    });
+
+                    // Reset textarea
+                    form.querySelectorAll("textarea").forEach(el => el.value = el.defaultValue);
+
+                    // TIDAK reset select agar tidak menghapus isian blade kosong (undefined)
+                    // form.querySelectorAll("select").forEach(el => el.value = el.defaultValue); ← DIHAPUS
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

@@ -83,7 +83,7 @@
                 </div>
             </div>
             <div class="card-footer text-center bg-light">
-                <a href="/" class="btn btn-outline-primary">
+                <a href="/mahasiswa" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left-circle"></i> Kembali
                 </a>
             </div>
